@@ -1,12 +1,13 @@
-//<span class="cmdIcon fa-solid fa-ellipsis-vertical"></span>
 let contentScrollPosition = 0;
+let faviconUrl = "http://www.google.com/s2/favicons?sz=64&domain_url="
+
 Init_UI();
 
 function Init_UI() {
     renderBookmarks();
     $('#createBookmark').on("click", async function () {
         saveContentScrollPosition();
-        renderCreateContactForm();
+        renderCreateBookmarkForm();
     });
     $('#abort').on("click", async function () {
         renderBookmarks();
@@ -46,11 +47,18 @@ async function renderBookmarks() {
     $("#createBookmark").show();
     $("#abort").hide();
     let bookmarks = await API_GetBookmarks();
+    let categories = getCategories(bookmarks);
     eraseContent();
     if (bookmarks !== null) {
         bookmarks.forEach(bookmark => {
-            $("#content").append(renderBookmark(bookmark));
+            if(selectedCategory == ""){
+                $("#content").append(renderBookmark(bookmark));
+            }
+            else if(selectedCategory == bookmark.Category){
+                $("#content").append(renderBookmark(bookmark));
+            }
         });
+        updateDropDownMenu(categories);
         restoreContentScrollPosition();
         // Attached click events on command icons
         $(".editCmd").on("click", function () {
@@ -61,7 +69,7 @@ async function renderBookmarks() {
             saveContentScrollPosition();
             renderDeleteBookmarkForm(parseInt($(this).attr("deleteBookmarkId")));
         });
-        $(".bookmarkRow").on("click", function (e) { e.preventDefault(); })
+        //$(".bookmarkRow").on("click", function (e) { e.preventDefault(); })
     } else {
         renderError("Service introuvable");
     }
@@ -115,8 +123,10 @@ async function renderDeleteBookmarkForm(id) {
             <div class="bookmarkRow" bookmark_id=${bookmark.Id}">
                 <div class="bookmarkContainer">
                     <div class="bookmarkLayout">
-                        <div class="bookmarkTitle">${bookmark.Title}</div>
-                        <div class="bookmarkUrl">${bookmark.Url}</div>
+                        <div class="bookmarkTitle" style="display:flex; align-items:center">
+                            <img src="${faviconUrl}${bookmark.Url}" style="margin-right: 10px; height: 40px; width: 40px"/>
+                            ${bookmark.Title}
+                        </div>
                         <div class="bookmarkCategory">${bookmark.Category}</div>
                     </div>
                 </div>  
@@ -144,7 +154,7 @@ async function renderDeleteBookmarkForm(id) {
 function newBookmark() {
     bookmark = {};
     bookmark.Id = 0;
-    bookmark.Title= "";
+    bookmark.Title = "";
     bookmark.Url = "";
     bookmark.Category = "";
     return bookmark;
@@ -154,17 +164,22 @@ function renderBookmarkForm(bookmark = null) {
     $("#abort").show();
     eraseContent();
     let create = bookmark == null;
-    if (bookmark) bookmark = newBookmark();
+    if (create) bookmark = newBookmark();
+    let iconSrc = create ? "bookmark-logo.svg" : `${faviconUrl}${bookmark.Url}`;
+    let iconClass = create ? "appLogo" : "";
     $("#actionTitle").text(create ? "Création" : "Modification");
     $("#content").append(`
         <form class="form" id="bookmarkForm">
+            <div style="margin-bottom: 10px">
+                <img src="${iconSrc}" class="${iconClass}" id="favicon" style="height: 40px; width: 40px"/>
+            </div>
             <input type="hidden" name="Id" value="${bookmark.Id}"/>
-
+            
             <label for="Title" class="form-label">Titre </label>
             <input 
                 class="form-control Alpha"
-                name="Name" 
-                id="Name" 
+                name="Title" 
+                id="Title" 
                 placeholder="Titre"
                 required
                 RequireMessage="Veuillez entrer un titre"
@@ -198,6 +213,19 @@ function renderBookmarkForm(bookmark = null) {
             <input type="button" value="Annuler" id="cancel" class="btn btn-secondary">
         </form>
     `);
+
+    $("#Url").on("input", function () {
+        let url = $(this).val();
+        let favicon = `${faviconUrl}${url}`;
+
+        if(url == ""){
+            favicon = "bookmark-logo.svg";
+
+        }
+        $("#favicon").attr("src", favicon);
+        
+    });
+
     initFormValidation();
     $('#bookmarkForm').on("submit", async function (event) {
         event.preventDefault();
@@ -226,12 +254,16 @@ function getFormData($form) {
 
 function renderBookmark(bookmark) {
     return $(`
-     <div class="bookmarkRow" contact_id=${bookmark.Id}">
+     <div class="bookmarkRow" bookmark_id="${bookmark.Id}">
         <div class="bookmarkContainer noselect">
             <div class="bookmarkLayout">
-                <span class="bookmarkTitle">${bookmark.Title}</span>
-                <span class="bookmarkUrl">${bookmark.Url}</span>
-                <span class="bookmarkCategory">${bookmark.Category}</span>
+                <div style="display:flex; align-items:center">
+                    <img src="${faviconUrl}${bookmark.Url}" style="margin-right: 10px; width: 40px; height: 40px"/>
+                    <span class="bookmarkTitle">${bookmark.Title}</span>
+                </div>
+                <a href="${bookmark.Url}" target="_blank">
+                    <span class="bookmarkCategory">${bookmark.Category}</span>
+                </a>
             </div>
             <div class="bookmarkCommandPanel">
                 <span class="editCmd cmdIcon fa fa-pencil" editBookmarkId="${bookmark.Id}" title="Modifier ${bookmark.Title}"></span>
@@ -240,4 +272,14 @@ function renderBookmark(bookmark) {
         </div>
     </div>           
     `);
+}
+
+function getCategories(bookmarks){
+    let categories = [];
+    bookmarks.forEach(bookmark => {
+        if (!categories.includes(bookmark.Category)) {
+            categories.push(bookmark.Category);
+        }
+    });
+    return categories;
 }

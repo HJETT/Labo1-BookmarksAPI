@@ -7,7 +7,7 @@
     <title>Gestionnaire de favoris</title>
 
     <link rel="site.webmanifest" href="manifest.json" />
-    <link rel="icon" href="contact-logo.svg">
+    <link rel="icon" href="bookmark-logo.svg">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -15,11 +15,11 @@
 </head>
 
 <body>
-<!-- Commentaire qui ne sera pas rendu par le fureteur -->
+    <!-- Commentaire qui ne sera pas rendu par le fureteur -->
 
     <div id="main">
         <div id="header">
-            <img src="contact-logo.svg" class="appLogo" alt="" title="Gestionnaire de favoris">
+            <img src="bookmark-logo.svg" class="appLogo" alt="" title="Gestionnaire de favoris">
             <h4 id="actionTitle">Liste des favoris</h4>
             <i class="cmdIcon fa fa-plus" id="createBookmark" title="Ajouter un favoris"></i>
             <i class="cmdIcon fa fa-times" id="abort" title="Annuler"></i>
@@ -29,8 +29,10 @@
                 </div>
                 <div class="dropdown-menu noselect" id="DDMenu">
                     <div class="dropdown-item" id="loginCmd">
-                        <i class="menuIcon fa fa-sign-in mx-2"></i> Connexion
+                        <i class="menuIcon fa fa-sign-in mx-2"></i> Toutes les catégories
                     </div>
+                    <div class="dropdown-divider"></div>
+
                     <div class="dropdown-divider"></div>
 
                     <div class="dropdown-item" id="aboutCmd">
@@ -48,6 +50,7 @@
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="js/API_Bookmarks.js"></script>
     <script src="js/validation.js"></script>
+    <script src="js/dropdown.js"></script>
     <script src="js/siteUI.js"></script>
 </body>
 

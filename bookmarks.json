@@ -1,8 +1,1 @@
-[
-    {
-        "Id": 1, 
-        "Title": "Google", 
-        "Url": "https://www.google.ca/", 
-        "Category": "Search engine"
-    }
-]
+[{"Id":1,"Title":"Google","Url":"https://www.google.ca/","Category":"Moteur de recherche"},{"Id":2,"Title":"Instagram","Url":"https://www.instagram.com/","Category":"Réseaux sociaux"},{"Id":3,"Title":"GitHub","Url":"https://github.com/","Category":"Cloud"},{"Id":4,"Title":"Azure","Url":"https://azure.microsoft.com/en-ca","Category":"Cloud"},{"Id":5,"Title":"Glitch","Url":"https://glitch.com/","Category":"Cloud"},{"Id":6,"Title":"Collège Lionel-Groulx","Url":"https://clg.qc.ca/","Category":"Cegep"},{"Id":7,"Title":"Facebook","Url":"https://facebook.com/","Category":"Réseaux sociaux"},{"Id":8,"Title":"Tik Tok","Url":"https://www.tiktok.com/en/","Category":"Réseaux sociaux"}]

@@ -32,7 +32,7 @@ function validateContact(contact) {
     if (!('Email' in contact)) return 'Email is missing';
     return '';
 }
-function validateBookmark(bookmark){
+function validateBookmark(bookmark) {
     if (!('Title' in bookmark)) return 'Title is missing';
     if (!('Url' in bookmark)) return 'Url is missing';
     if (!('Category' in bookmark)) return 'Category is missing';
@@ -72,11 +72,11 @@ async function handleContactsServiceRequest(req, res) {
                 validStatus = validateContact(newContact);
                 if (validStatus == '') {
                     let maxId = 0;
-                    bookmarks.forEach(bookmark => {
-                        if (bookmark.Id > maxId)
-                            maxId = bookmark.Id;
+                    contacts.forEach(contact => {
+                        if (contact.Id > maxId)
+                            maxId = contact.Id;
                     });
-                    newBookmark.Id = maxId + 1;
+                    newContact.Id = maxId + 1;
                     contacts.push(newContact);
                     fs.writeFileSync(contactsFilePath, JSON.stringify(contacts));
                     res.writeHead(201, { 'content-type': 'application/json' });
@@ -91,7 +91,7 @@ async function handleContactsServiceRequest(req, res) {
                 validStatus = validateContact(modifiedContact);
                 if (validStatus == '') {
                     if (!isNaN(id)) {
-                        if (!('Id' in modifiedContact)){
+                        if (!('Id' in modifiedContact)) {
                             modifiedContact.Id = id;
                         }
                         if (modifiedContact.Id == id) {
@@ -161,31 +161,31 @@ async function handleContactsServiceRequest(req, res) {
     return false;
 }
 
-async function handleBookmarksServiceRequest(req, res){
-    if(req.url.includes("/api/bookmarks")){
+async function handleBookmarksServiceRequest(req, res) {
+    if (req.url.includes("/api/bookmarks")) {
         const bookmarksFilePath = "./bookmarks.json";
         let bookmarksJSON = fs.readFileSync(bookmarksFilePath);
         let bookmarks = JSON.parse(bookmarksJSON);
         let validStatus = '';
         let id = extract_Id_From_Request(req);
-        switch(req.method){
+        switch (req.method) {
             case "GET":
-                if(isNaN(id)){
-                    res.writeHead(200, { 'content-type': 'application/json'})
+                if (isNaN(id)) {
+                    res.writeHead(200, { 'content-type': 'application/json' });
                     res.end(bookmarksJSON);
-                } else{
+                } else {
                     let found = false;
-                    for(let bookmark of bookmarks){
-                        if(bookmark.Id = id){
+                    for (let bookmark of bookmarks) {
+                        if (bookmark.Id === id) {
                             found = true;
                             res.writeHead(200, { 'content-type': 'application/json' });
                             res.end(JSON.stringify(bookmark));
                             break;
                         }
-                        if (!found) {
-                            res.writeHead(404);
-                            res.end(`Error : The bookmark of id ${id} does not exist`);
-                        }
+                    }
+                    if (!found) {
+                        res.writeHead(404);
+                        res.end(`Error : The bookmark of id ${id} does not exist`);
                     }
                 }
                 break;
@@ -213,11 +213,11 @@ async function handleBookmarksServiceRequest(req, res){
                 validStatus = validateBookmark(modifiedBookmark);
                 if (validStatus == '') {
                     if (!isNaN(id)) {
-                        if (!('Id' in modifiedBookmark)){
+                        if (!('Id' in modifiedBookmark)) {
                             modifiedBookmark.Id = id;
                         }
                         if (modifiedBookmark.Id == id) {
-                            let storedBookmark= null;
+                            let storedBookmark = null;
                             for (let bookmark of bookmarks) {
                                 if (bookmark.Id === id) {
                                     storedBookmark = bookmark;
@@ -281,9 +281,9 @@ async function handleBookmarksServiceRequest(req, res){
     }
 }
 function handleRequest(req, res) {
-    if(req.url.includes("/api/contacts"))
+    if (req.url.includes("/api/contacts"))
         return handleContactsServiceRequest(req, res);
-    else if(req.url.includes("/api/bookmarks"))
+    else if (req.url.includes("/api/bookmarks"))
         return handleBookmarksServiceRequest(req, res);
 }
 

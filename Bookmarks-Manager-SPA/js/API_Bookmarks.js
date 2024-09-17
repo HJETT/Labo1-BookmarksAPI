@@ -8,7 +8,7 @@ function API_GetBookmarks() {
         });
     });
 }
-function API_GetBookmarks(bookmarkId) {
+function API_GetBookmark(bookmarkId) {
     return new Promise(resolve => {
         $.ajax({
             url: API_URL + "/" + bookmarkId,
